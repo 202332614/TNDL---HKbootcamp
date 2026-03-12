@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>소비 유형 분석</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Noto Sans KR", sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      height: 72px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      margin-bottom: 20px;
+    }
+
+    .logo-box {
+      width: 140px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    .mypage {
+      font-size: 14px;
+      color: #777;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 18% 82%;
+      gap: 2%;
+    }
+
+    .sidebar {
+      background: white;
+      border: 1px solid #dbe3f0;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .menu a {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #5e87ff;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #444;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .menu a:hover {
+      background: #5e87ff;
+      color: white;
+    }
+
+    .menu a.active {
+      background: #5e87ff;
+      color: white;
+    }
+
+    .content {
+      background: white;
+      border: 1px solid #dbe3f0;
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #444;
+    }
+
+    .arrow-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: #eef1f7;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .arrow-btn:hover {
+      background: #dfe6f3;
+    }
+
+    .insight-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .top-row {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 24px;
+    }
+
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5eaf4;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #444;
+      margin-bottom: 18px;
+    }
+
+    .chart-box {
+      width: 100%;
+      height: 240px;
+    }
+
+    .summary-main h2 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #444;
+      line-height: 1.4;
+    }
+
+    .summary-main p {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      color: #5e87ff;
+      font-weight: 800;
+    }
+
+    .amount-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .amount-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #edf1f7;
+      padding-top: 10px;
+      color: #555;
+      font-size: 15px;
+    }
+
+    .amount-list strong {
+      color: #5e87ff;
+    }
+
+    .bottom-card {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bottom-info h2 {
+      font-size: 48px;
+      color: #5e87ff;
+      margin-bottom: 18px;
+      margin-left: 20px;
+    }
+
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      margin-left: 8px;
+      flex-wrap: wrap;
+    }
+
+    .trend-text {
+      font-size: 15px;
+      color: #555;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .legend {
+      margin-top: 20px;
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: #777;
+      flex-wrap: wrap;
+      margin-left: 10px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .gray {
+      background: #dfe5ef;
+    }
+
+    .blue {
+      background: #5e87ff;
+    }
+
+    .pie-text-group {
+      margin-top: 0;
+      margin-left: 20px;
+    }
+
+    .pie-money-row {
+      margin-top: 18px;
+      margin-left: 0;
+    }
+
+    .money-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #444;
+      line-height: 1.5;
+      margin-left: 18px;
+    }
+
+    .wallet-box {
+      height: 200px;
+    }
+
+    .wallet-box canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    @media (max-width: 1024px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .top-row,
+      .bottom-row,
+      .bottom-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo-box">
+        <img src="/static/logo.png" style="width: 140px;">
+      </div>
+      <div class="mypage">마이페이지</div>
+    </header>
+
+    <div class="main-layout">
+      <aside class="sidebar">
+        <ul class="menu">
+          <li><a href="/home">홈</a></li>
+          <li><a href="/record">소비 기록</a></li>
+          <li><a href="/insight" class="active">소비 유형 분석</a></li>
+        </ul>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <button class="arrow-btn" id="prev-date-btn">&lt;</button>
+          <span id="today-date"></span>
+          <button class="arrow-btn" id="next-date-btn">&gt;</button>
+        </div>
+
+        <section class="insight-sections">
+          <div class="top-row">
+            <div class="card">
+              <div class="card-title">시간대별 소비 비교</div>
+              <div class="chart-box">
+                <canvas id="groupBarChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="summary-main">
+                <h2>
+                  총 소비액 :
+                  <span class="highlight" id="summary-total-amount">0원</span>
+                </h2>
+
+                <p>
+                  오늘은
+                  <span class="highlight" id="summary-top-time">-</span>
+                  시간대 소비가 많아요
+                </p>
+
+                <ul class="amount-list">
+                  <li><span>아침 소비</span><strong id="amount-morning">0원</strong></li>
+                  <li><span>점심 소비</span><strong id="amount-lunch">0원</strong></li>
+                  <li><span>저녁 소비</span><strong id="amount-evening">0원</strong></li>
+                  <li><span>야간 소비</span><strong id="amount-night">0원</strong></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bottom-row">
+            <div class="card">
+              <div class="card-title">시간대별 소비 금액</div>
+              <div class="chart-box">
+                <canvas id="amountBarChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card bottom-card">
+              <div class="bottom-info">
+                <h2 id="impulse-ratio">0%</h2>
+
+                <div class="trend pie-text-group">
+                  <div class="trend-text" id="impulse-count-text">충동 소비 횟수 0회</div>
+                </div>
+
+                <div class="trend pie-text-group">
+                  <div class="trend-text" id="planned-count-text">계획 소비 횟수 0회</div>
+                </div>
+
+                <div class="trend pie-money-row">
+                  <div class="trend-text money-text">
+                    충동 소비 금액 <span class="highlight" id="impulse-amount">0원</span>
+                  </div>
+                </div>
+
+                <div class="legend">
+                  <span><i class="dot blue"></i>충동 소비</span>
+                  <span><i class="dot gray"></i>계획 소비</span>
+                </div>
+              </div>
+
+              <div class="wallet-box">
+                <canvas id="pieChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/static/insight.js"></script>
+</body>
+</html>

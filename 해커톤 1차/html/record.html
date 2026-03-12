@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TNDL - 소비 기록</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Noto Sans KR", sans-serif;
+}
+
+body{
+  background:#f5f7fb;
+}
+
+.page{
+  width:100%;
+  min-height:100vh;
+  padding:20px;
+}
+
+/* header */
+.header{
+  height:72px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 24px;
+  margin-bottom:20px;
+}
+
+.logo-box{
+  width:140px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  font-size:22px;
+  font-weight:700;
+  color:#5b7cfa;
+}
+
+.mypage{
+  font-size:14px;
+  color:#777;
+}
+
+/* layout */
+.main-layout{
+  display:grid;
+  grid-template-columns:18% 82%;
+  gap:2%;
+}
+
+/* sidebar */
+.sidebar{
+  background:white;
+  border:1px solid #dbe3f0;
+  border-radius:18px;
+  padding:20px;
+}
+
+.menu{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.menu a{
+  display:block;
+  padding:12px;
+  text-align:center;
+  border:1px solid #5b7cfa;
+  border-radius:12px;
+  text-decoration:none;
+  color:#444;
+  font-weight:600;
+  transition:0.2s;
+}
+
+.menu a:hover{
+  background:#5b7cfa;
+  color:white;
+}
+
+.menu a.active{
+  background:#5b7cfa;
+  color:white;
+}
+
+/* content */
+.content{
+  background:white;
+  border:1px solid #dbe3f0;
+  border-radius:18px;
+  padding:28px 40px;
+}
+
+.record-wrap{
+  width:85%;
+  margin:0 auto;
+}
+
+/* date */
+.date-box{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  margin-bottom:30px;
+}
+
+.arrow-btn{
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:50%;
+  background:#eef1f7;
+  color:#666;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.arrow-btn:hover{
+  background:#e3e8f3;
+}
+
+.date-text{
+  font-size:28px;
+  font-weight:800;
+  color:#444;
+}
+
+/* section title */
+.section-title{
+  font-size:24px;
+  font-weight:800;
+  color:#444;
+  margin-bottom:14px;
+}
+
+/* input */
+.money-input{
+  width:100%;
+  height:52px;
+  border:2px solid #5E87FF;
+  border-radius:14px;
+  padding:0 18px;
+  font-size:18px;
+  outline:none;
+  margin-bottom:30px;
+}
+
+.money-input:focus{
+  border-color:#5E87FF;
+}
+
+/* time buttons */
+.time-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:22px;
+  margin-bottom:30px;
+}
+
+.time-btn{
+  border:1px solid #dbe3f0;
+  border-radius:16px;
+  background:white;
+  padding:20px 10px;
+  min-height:180px;
+  cursor:pointer;
+  transition:0.2s;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  color:#555;
+}
+
+.time-btn:hover{
+  background:#eef3ff;
+  border-color:#5E87FF;
+}
+
+.time-btn.active{
+  background:#6f8ef8;
+  color:white;
+  border-color:#6f8ef8;
+}
+
+.time-img-box{
+  width:90px;
+  height:90px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  font-size:12px;
+  text-align:center;
+}
+
+.time-label{
+  font-size:18px;
+  font-weight:700;
+}
+
+/* type buttons */
+.type-row{
+  display:flex;
+  gap:22px;
+  margin-bottom:34px;
+}
+
+.type-btn{
+  width:210px;
+  height:48px;
+  border:2px solid #5E87FF;
+  border-radius:14px;
+  background:white;
+  color:#444;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.type-btn:hover{
+  background:#eef3ff;
+}
+
+.type-btn.active{
+  background:#5E87FF;
+  color:white;
+}
+
+/* save */
+.save-row{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:24px;
+}
+
+.save-btn{
+  width:140px;
+  height:48px;
+  border:none;
+  border-radius:14px;
+  background:#5b7cfa;
+  color:white;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.save-btn:hover{
+  background:#4f6cf7;
+}
+
+.delete-btn{
+  width:140px;
+  height:48px;
+  border:none;
+  border-radius:14px;
+  background:#ff6b6b;
+  color:white;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  margin-left:12px;
+  transition:0.2s;
+}
+
+.delete-btn:hover{
+  background:#ff4d4d;
+}
+
+/* saved preview */
+.preview-card{
+  background:#fff;
+  border:1px solid #e5eaf4;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+.preview-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:14px;
+  color:#444;
+}
+
+.preview-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.preview-list li{
+  display:grid;
+  grid-template-columns:110px 1fr 100px 100px;
+  align-items:center;
+  font-size:15px;
+  color:#555;
+}
+
+.preview-amount{
+  text-align:right;
+  color:#5b7cfa;
+  font-weight:700;
+}
+
+.preview-type{
+  text-align:right;
+  font-weight:700;
+}
+
+.empty-text{
+  color:#888;
+  font-size:15px;
+}
+
+@media (max-width:1024px){
+  .main-layout{
+    grid-template-columns:1fr;
+  }
+
+  .record-wrap{
+    width:100%;
+  }
+
+  .time-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
+
+@media (max-width:640px){
+  .time-grid{
+    grid-template-columns:1fr;
+  }
+
+  .type-row{
+    flex-direction:column;
+  }
+
+  .preview-list li{
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="header">
+    <div class="logo-box">
+      <img src="/static/logo.png" style="width: 140px;">
+    </div>
+    <div class="mypage">마이페이지</div>
+  </header>
+
+  <div class="main-layout">
+
+    <aside class="sidebar">
+      <ul class="menu">
+        <li><a href="/home">홈</a></li>
+        <li><a href="/record" class="active">소비 기록</a></li>
+        <li><a href="/insight">소비 유형 분석</a></li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <div class="record-wrap">
+
+        <div class="date-box">
+          <button class="arrow-btn" id="prev-date-btn"><</button>
+          <div class="date-text" id="today-date"></div>
+          <button class="arrow-btn" id="next-date-btn">></button>
+        </div>
+
+        <div class="section-title">사용 금액</div>
+        <input
+          type="number"
+          id="money-input"
+          class="money-input"
+          placeholder="사용하신 금액을 기록해 주세요!"
+        >
+
+        <div class="section-title">사용 시간</div>
+        <div class="time-grid">
+          <button class="time-btn" data-time="아침">
+            <div class="time-img-box">
+              <img src="/static/sun.png" style="width: 80px;">
+            </div>
+            <div class="time-label">아침</div>
+          </button>
+
+          <button class="time-btn" data-time="점심">
+            <div class="time-img-box">
+              <img src="/static/cloud.png" style="width: 100px;">
+            </div>
+            <div class="time-label">점심</div>
+          </button>
+
+          <button class="time-btn" data-time="저녁">
+            <div class="time-img-box">
+              <img src="/static/moon.png" style="width: 80px;">
+            </div>
+            <div class="time-label">저녁</div>
+          </button>
+
+          <button class="time-btn" data-time="야간">
+            <div class="time-img-box">
+              <img src="/static/star.png" style="width: 90px;">
+            </div>
+            <div class="time-label">야간</div>
+          </button>
+        </div>
+
+        <div class="section-title">사용 유형</div>
+        <div class="type-row">
+          <button class="type-btn" data-type="충동">충동 소비</button>
+          <button class="type-btn" data-type="계획">계획 소비</button>
+        </div>
+
+        <div class="save-row">
+          <button class="save-btn" id="save-btn">저장</button>
+          <button class="delete-btn" id="delete-btn">삭제</button>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-title">저장된 소비 기록</div>
+          <ul class="preview-list" id="preview-list"></ul>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<script src="/static/record.js"></script>
+</body>
+</html>

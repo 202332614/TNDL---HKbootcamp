@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TNDL - Home</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Noto Sans KR", sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      height: 72px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      margin-bottom: 20px;
+    }
+
+    .logo-box {
+      width: 140px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    .mypage {
+      font-size: 14px;
+      color: #777;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 18% 82%;
+      gap: 2%;
+    }
+
+    .sidebar {
+      background: white;
+      border: 1px solid #dbe3f0;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .menu a {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #5e87ff;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #444;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .menu a:hover {
+      background: #5e87ff;
+      color: white;
+    }
+
+    .menu a.active {
+      background: #5e87ff;
+      color: white;
+    }
+
+    .content {
+      background: white;
+      border: 1px solid #dbe3f0;
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5eaf4;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #444;
+    }
+
+    .arrow-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: #eef1f7;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .arrow-btn:hover {
+      background: #dfe6f3;
+    }
+
+    .chart-box {
+      height: 240px;
+    }
+
+    .summary-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sun-box {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .summary-text h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      color: #444;
+    }
+
+    .summary-text p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      color: #5b7cfa;
+      font-weight: 800;
+    }
+
+    .ratio {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      min-height: 140px;
+    }
+
+    .ratio h3 {
+      color: #555;
+      font-size: 18px;
+    }
+
+    .ratio-value {
+      font-size: 50px;
+      font-weight: 800;
+      color: #5b7cfa;
+      text-align: center;
+    }
+
+    .recent-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #444;
+      margin-bottom: 16px;
+    }
+
+    .recent-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .recent-list li {
+      display: grid;
+      grid-template-columns: 70px 1fr 90px;
+      column-gap: 10px;
+      font-size: 14px;
+      align-items: center;
+      color: #555;
+    }
+
+    .amount {
+      text-align: right;
+      color: #5b7cfa;
+      font-weight: 700;
+    }
+
+    .bottom-card {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bottom-info h2 {
+      font-size: 28px;
+      color: #444;
+      margin-bottom: 16px;
+      margin-left: 14px;
+    }
+
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .trend-box {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 20px;
+    }
+
+    .trend-text {
+      font-size: 15px;
+      color: #555;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-left: 10px;
+    }
+
+    .legend {
+      margin-top: 12px;
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: #777;
+      flex-wrap: wrap;
+      margin-left: 10px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .gray {
+      background: #dfe5ef;
+    }
+
+    .blue {
+      background: #5b7cfa;
+    }
+
+    .wallet-box {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo-box">
+        <img src="/static/logo.png" style="width: 140px;">
+      </div>
+      <div class="mypage">마이페이지</div>
+    </header>
+
+    <div class="main-layout">
+      <aside class="sidebar">
+        <ul class="menu">
+          <li><a href="/home" class="active">홈</a></li>
+          <li><a href="/record">소비 기록</a></li>
+          <li><a href="/insight">소비 유형 분석</a></li>
+        </ul>
+      </aside>
+
+      <main class="content">
+        <section class="dashboard-grid">
+          <div class="card">
+            <div class="chart-header">
+              <button class="arrow-btn" id="prev-date-btn"><</button>
+              <span id="today-date"></span>
+              <button class="arrow-btn" id="next-date-btn">></button>
+            </div>
+
+            <div class="chart-box">
+              <canvas id="timeBarChart"></canvas>
+            </div>
+          </div>
+
+          <div>
+            <div class="card summary-card" style="margin-bottom: 20px;">
+              <div class="sun-box">
+                <img id="time-icon" src="/static/sun.png" style="width: 80px;">
+              </div>
+
+              <div class="summary-text">
+                <h2>
+                  오늘 총 <span class="highlight" id="summary-total-amount">0원</span>을 소비했어요!
+                </h2>
+                <p>
+                  오늘은 <span class="highlight" id="summary-top-time">-</span> 시간대에 가장 많이 소비했어요
+                </p>
+              </div>
+            </div>
+
+            <div class="card ratio">
+              <h3>충동 소비 비율</h3>
+              <div class="ratio-value" id="impulse-ratio">0%</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="recent-title">최근 소비</div>
+            <ul class="recent-list" id="recent-list"></ul>
+          </div>
+
+          <div class="card bottom-card">
+            <div class="bottom-info">
+              <h2 id="bottom-total-amount" style="margin-left: 10px;">0원</h2>
+
+              <div class="trend">
+                <div class="trend-box">
+                  <img id="trend-icon" src="/static/up.png" style="width: 50px;">
+                </div>
+                <div class="trend-text" id="trend-text">
+                  어제와 동일한 소비예요!
+                </div>
+              </div>
+
+              <div class="legend">
+                <span><i class="dot gray"></i>총 소비</span>
+                <span><i class="dot blue"></i>충동 소비</span>
+              </div>
+            </div>
+
+            <div class="wallet-box">
+              <img src="/static/card.png" style="width: 180px">
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="/static/home.js"></script>
+</body>
+</html>
